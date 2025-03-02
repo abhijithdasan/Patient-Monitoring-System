@@ -181,7 +181,7 @@ const Dashboard = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm text-gray-800">
-                        Patient monitoring session started for <span className="font-medium">John Doe</span>
+                        Patient monitoring session started for <span className="font-medium">Abhijith</span>
                       </p>
                       <p className="text-xs text-gray-500">30 minutes ago</p>
                     </div>

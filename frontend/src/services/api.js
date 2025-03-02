@@ -1,19 +1,22 @@
 import axios from 'axios';
 
-// Create an Axios instance with default config
+// Create axios instance with default config
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
-  },
+    'Accept': 'application/json'
+  }
 });
 
-// Add a request interceptor to attach auth token
+// Add a request interceptor
 api.interceptors.request.use(
   (config) => {
+    // Check if token exists in localStorage
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.token) {
-      config.headers.Authorization = `Bearer ${user.token}`;
+      config.headers['Authorization'] = `Bearer ${user.token}`;
     }
     return config;
   },
@@ -22,18 +25,23 @@ api.interceptors.request.use(
   }
 );
 
-// Add a response interceptor to handle common errors
+// Add a response interceptor
 api.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    // Handle unauthorized errors (expired token, etc.)
+    // Handle 401 Unauthorized errors
     if (error.response && error.response.status === 401) {
-      // Clear local storage and redirect to login
+      // Clear user data from localStorage
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      
+      // Redirect to login page if not already there
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
+    
     return Promise.reject(error);
   }
 );
